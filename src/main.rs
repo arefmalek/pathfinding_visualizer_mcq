@@ -1,19 +1,25 @@
 // main.rs
 
-
 use rand::Rng;
 
 mod sorting;
 
 fn main() {
-    let mut vec: Vec<i64> = Vec::with_capacity(39);
+    let capacity = 5;
+    let mut vec: Vec<i64> = Vec::with_capacity(capacity);
     for idx in 0..vec.capacity() {
-        vec.push(rand::random());
+        vec.push(rand::thread_rng().gen_range(1..101));
         println!("{}", vec[idx]);
     }
 
-    println!("{}", arr);
+    sorting::bubble_sort(&mut vec);
 
-    sorting::print_sorting();
+    println!("Array after sorting: ");
+
+    for idx in 0..vec.capacity() {
+        vec.push(rand::thread_rng().gen_range(1..101));
+        println!("{}", vec[idx]);
+    }
     println!("Hello, world!");
+
 }
