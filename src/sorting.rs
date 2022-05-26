@@ -20,3 +20,27 @@ pub fn bubble_sort(vec: &mut Vec<i64>) {
         }
     }
 }
+
+pub fn selection_sort(vec: &mut Vec<i64>) {
+    // put each value in it's correct position
+
+    for i in 0..vec.capacity() {
+
+        let mut index = i;
+
+        for j in i..vec.capacity() {
+
+            if vec[j] < vec[index] {
+                index = j;
+            }
+        }
+
+        // swap index and i values
+        if index != i {
+            let temp = vec[index];
+            vec[index] = vec[i];
+            vec[i] = temp;
+        }
+    }
+    
+}

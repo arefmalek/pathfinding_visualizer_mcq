@@ -12,7 +12,7 @@ fn main() {
         println!("{}", vec[idx]);
     }
 
-    sorting::bubble_sort(&mut vec);
+    sorting::selection_sort(&mut vec);
 
     println!("Array after sorting: ");
 
@@ -20,6 +20,7 @@ fn main() {
         vec.push(rand::thread_rng().gen_range(1..101));
         println!("{}", vec[idx]);
     }
-    println!("Hello, world!");
+
+    println!("It works!");
 
 }
