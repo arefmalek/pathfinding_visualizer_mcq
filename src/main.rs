@@ -12,7 +12,7 @@ fn main() {
         println!("{}", vec[idx]);
     }
 
-    sorting::selection_sort(&mut vec);
+    sorting::insertion_sort(&mut vec);
 
     println!("Array after sorting: ");
 

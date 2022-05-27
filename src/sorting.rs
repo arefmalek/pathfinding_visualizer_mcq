@@ -44,3 +44,22 @@ pub fn selection_sort(vec: &mut Vec<i64>) {
     }
     
 }
+
+pub fn insertion_sort(vec: &mut Vec<i64>) {
+    println!("Vec capacity is {}", vec.capacity());
+    for i in 0..vec.capacity() {
+
+        let mut index = i;
+
+        while index > 0 && vec[index] < vec[index-1] {
+            // swap em 
+
+            let temp = vec[index];
+            vec[index] = vec[index-1];
+            vec[index-1] = temp;
+
+            // increment index
+            index-=1;
+        }
+    }
+}
