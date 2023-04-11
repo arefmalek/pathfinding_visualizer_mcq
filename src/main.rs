@@ -1,26 +1,31 @@
-// main.rs
+mod search;
 
-use rand::Rng;
-
-mod sorting;
+fn parse_file() {
+    // file format as such
+    // num_edges
+    // u, v, w <-- edge_src, edge_dest, edge_weight
+}
 
 fn main() {
-    let capacity = 5;
-    let mut vec: Vec<i64> = Vec::with_capacity(capacity);
-    for idx in 0..vec.capacity() {
-        vec.push(rand::thread_rng().gen_range(1..101));
-        println!("{}", vec[idx]);
-    }
+    // create a graph
 
-    sorting::insertion_sort(&mut vec);
+    // TODO: figure out IO in Rust to read the representation from a file
 
-    println!("Array after sorting: ");
+    // make the graph representation (adj matrix)
+    let num_vertices = 6;
 
-    for idx in 0..vec.capacity() {
-        vec.push(rand::thread_rng().gen_range(1..101));
-        println!("{}", vec[idx]);
-    }
+    // create a 2D array of integers
+    let mut array_2d: Vec<Vec<i32>> = vec![vec![0; num_vertices]; num_vertices];
 
-    println!("It works!");
+    // fill the array with some values
+    array_2d[0][1] = 2;
+    array_2d[0][3] = 4;
+    array_2d[1][2] = 7;
+    array_2d[1][3] = 1;
+    array_2d[2][5] = 1;
+    array_2d[3][4] = 3;
+    array_2d[4][2] = 2;
+    array_2d[4][5] = 5;
 
+    search::dijkstra(0, &array_2d);
 }
