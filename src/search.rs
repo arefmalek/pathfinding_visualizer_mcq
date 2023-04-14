@@ -1,6 +1,29 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
 
+struct Node {
+    r: i32,
+    c: i32,
+}
+
+impl Node {
+    fn get_adj_nodes(&self) -> Vec<Node> {
+        let dr = vec![-1, 0, 1, 0];
+        let dc = vec![0, 1, 0, -1];
+
+        let mut adj_nodes = Vec::new();
+
+        for i in 0..4 {
+            adj_nodes.push(Node {
+                r: &self.r + dr[i],
+                c: &self.c + dc[i],
+            });
+        }
+
+        return adj_nodes;
+    }
+}
+
 pub fn dijkstra(src: i32, adj_list: &Vec<Vec<i32>>) {
     // just list all of the adjacencies
 
@@ -12,7 +35,7 @@ pub fn dijkstra(src: i32, adj_list: &Vec<Vec<i32>>) {
 
     // vector of distances
     let mut dist_vec = vec![i32::MAX; num_vertices]; // initialize max distance
-    // hashmap of traversal
+                                                     // hashmap of traversal
     let mut prev_node: HashMap<i32, i32> = HashMap::new();
     // history of visited nodes
     let mut visited: HashSet<i32> = HashSet::new();
@@ -26,7 +49,8 @@ pub fn dijkstra(src: i32, adj_list: &Vec<Vec<i32>>) {
     while graph
         .iter()
         .filter(|internal_vec| !internal_vec.iter().all(|x| *x == 0))
-        .count() > 0  
+        .count()
+        > 0
     {
         // closest node that we haven't visited already
         let curr_node: usize = dist_vec
@@ -67,4 +91,8 @@ pub fn dijkstra(src: i32, adj_list: &Vec<Vec<i32>>) {
     }
 
     dbg!(&prev_node, &dist_vec);
+}
+
+pub fn breadth_first(src: i32, dest: i32, problem: &Vec<Vec<i32>>) {
+    let stack = Vec;
 }
