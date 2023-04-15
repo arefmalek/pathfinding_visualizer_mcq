@@ -93,6 +93,31 @@ pub fn dijkstra(src: i32, adj_list: &Vec<Vec<i32>>) {
     dbg!(&prev_node, &dist_vec);
 }
 
-pub fn breadth_first(src: i32, dest: i32, problem: &Vec<Vec<i32>>) {
-    let stack = Vec;
+pub fn breadth_first(src: (i32, i32), dest: (i32, i32), maze: Vec<Vec<i32>>) {
+    // initialize central info
+    let num_rows = maze.len() as i32;
+    let num_cols = maze[0].len() as i32;
+
+    // intialize structures used for the problem
+    let mut stack: Vec<Node> = Vec::new();
+
+    // push initial node onto the stack
+    let (r, c ) = src;
+    stack.push(Node { 
+        r: r, 
+        c: c
+    });
+
+    while (stack.len() > 0) {
+        // get current
+        let curr: Node = stack.pop().expect("popped an empty stack!");
+
+        // clear out all invalid adjacent nodes
+        let valid_nodes = curr
+        .get_adj_nodes()
+        .iter()
+        .map(|node| 0 < node.r && node.r < num_rows && 0 < node.c  && node.c < num_cols)
+        ;
+
+    }
 }
