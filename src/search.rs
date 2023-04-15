@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
 
+use std::collections::VecDeque;
+
 struct Node {
     r: i32,
     c: i32,
@@ -93,31 +95,63 @@ pub fn dijkstra(src: i32, adj_list: &Vec<Vec<i32>>) {
     dbg!(&prev_node, &dist_vec);
 }
 
-pub fn breadth_first(src: (i32, i32), dest: (i32, i32), maze: Vec<Vec<i32>>) {
-    // initialize central info
-    let num_rows = maze.len() as i32;
-    let num_cols = maze[0].len() as i32;
+pub fn breadth_first(src: i32, dest: i32, problem: &Vec<Vec<i32>>) {
+    // initialize structures needed
+    let num_vertices = problem.len() as i32;
 
-    // intialize structures used for the problem
-    let mut stack: Vec<Node> = Vec::new();
+    // stack for current oint
+    let mut queue = VecDeque::new();
 
-    // push initial node onto the stack
-    let (r, c ) = src;
-    stack.push(Node { 
-        r: r, 
-        c: c
-    });
+    // stack to store current pathu
+    let mut cpath: VecDeque<i32> = VecDeque::new();
 
-    while (stack.len() > 0) {
-        // get current
-        let curr: Node = stack.pop().expect("popped an empty stack!");
+    // set to store all visited nodes
+    let mut visited: HashSet<i32> = HashSet::new();
 
-        // clear out all invalid adjacent nodes
-        let valid_nodes = curr
-        .get_adj_nodes()
-        .iter()
-        .map(|node| 0 < node.r && node.r < num_rows && 0 < node.c  && node.c < num_cols)
-        ;
+    // start with the first node
+    queue.push_back(src);
+    dbg!(queue);
 
+    // run BFS
+    while (queue.len() > 0) {
+        // get curr note
+        let curr = queue.pop_front().expect("No able to remove the queue s");
+
+        // not a current path ndoe
+        cpath.push_back(curr);
+
+        // exit conditions
+        // curr has reached the dest
+        if curr == dest {
+            dbg!(cpath);
+            dbg!("hello world");
+            break;
+        }
+
+        if queue.contains(&curr) {
+            cpath.pop_back();
+            continue;
+        }
+
+        // get adjacents: must be adjacent and not visited
+        let adj_nodes: Vec<(usize, i32)> = problem[curr as usize]
+            .iter()
+            .enumerate()
+            .filter(|(node as usize, &dist)| dist > 0 && !visited.contains(node))
+            .map(|(node, dist)| (node as usize, *dist))
+            .collect();
+
+        if adj_nodes.len() == 0 {
+            continue;
+        }
+
+        // we're not continuing to use this node
+
+        // update cpath, stack, visited
+        for adj in adj_nodes.iter() {
+            queue.push_back(*adj);
+        }
     }
+
+    dbg!("hey zaddy <3 ");
 }

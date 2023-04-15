@@ -27,5 +27,6 @@ fn main() {
     array_2d[4][2] = 2;
     array_2d[4][5] = 5;
 
-    search::dijkstra(0, &array_2d);
+    // search::dijkstra(0, &array_2d);
+    search::breadth_first(0, 3, &array_2d);
 }
