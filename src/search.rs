@@ -110,36 +110,38 @@ pub fn breadth_first(src: i32, dest: i32, problem: &Vec<Vec<i32>>) {
 
     // start with the first node
     queue.push_back(src);
-    dbg!(&queue);
+    dbg!(&problem, &queue);
 
     // run BFS
     while (queue.len() > 0) {
         // get curr note
         let curr = queue.pop_front().expect("No able to remove the queue s");
 
-        // not a current path ndoe
-        cpath.push_back(curr);
+        // // not a current path ndoe
+        // cpath.push_back(curr);
 
-        // exit conditions
-        // curr has reached the dest
+        // // exit conditions
+        // // curr has reached the dest
         if curr == dest {
-            dbg!(cpath);
+            // dbg!(cpath);
             dbg!("hello world");
             break;
         }
 
-        if queue.contains(&curr) {
-            cpath.pop_back();
-            continue;
-        }
+        // if queue.contains(&curr) {
+        //     cpath.pop_back();
+        //     continue;
+        // }
 
+        // haven't visited yet, add so we don't visit twice
+        visited.insert(curr);
 
         // get adjacents: must be adjacent and not visited
-        let adj_nodes: Vec<(usize, i32)> = problem[curr as usize]
+        let adj_nodes: Vec<i32> = problem[curr as usize]
             .iter()
             .enumerate()
             .filter(|(node, &dist)| dist > 0 && !visited.contains(&(*node as i32)))
-            .map(|(node, dist)| (node as usize, *dist))
+            .map(|(node, dist)| (node as i32))
             .collect();
 
         if adj_nodes.len() == 0 {
@@ -151,7 +153,7 @@ pub fn breadth_first(src: i32, dest: i32, problem: &Vec<Vec<i32>>) {
         // we're not continuing to use this node
 
         // update cpath, stack, visited
-        for (idx, adj) in adj_nodes {
+        for (adj) in adj_nodes {
             queue.push_back(adj);
         }
     }
