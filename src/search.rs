@@ -144,6 +144,7 @@ pub fn breadth_first(src: i32, dest: i32, problem: &Vec<Vec<i32>>) {
             .map(|(node, dist)| (node as i32))
             .collect();
 
+        // dead end here, no chance of finding dest node from this path
         if adj_nodes.len() == 0 {
             continue;
         }
