@@ -2,10 +2,20 @@ use macroquad::prelude::*;
 
 mod search;
 
-fn parse_file() {
-    // file format as such
-    // num_edges
-    // u, v, w <-- edge_src, edge_dest, edge_weight
+type Point = (i16, i16);
+
+enum PointType {
+    Node,
+    Wall,
+    Source,
+    Destination
+}
+struct graph {
+    // array of points and classification
+    SQUARES: usize,
+    source: Point,
+    dest: Point,
+    squares: [[pointType; ]; 3],
 }
 
 #[macroquad::main("BasicShapes")]
@@ -33,37 +43,53 @@ async fn main() {
     // // search::dijkstra(0, &array_2d);
     // search::breadth_first(0, 3, &array_2d);
 
-
     // macroquad stuff
 
     loop {
-        clear_background(WHITE);
+        clear_background(LIGHTGRAY);
 
-        // normal gamedev coordinate system: 
+        // normal gamedev coordinate system:
         // top left of screen (0,0), x-> increase to right, y-> increase toward bottom of screen
 
         // draw the outer line of the grid
 
-        // draw the actual grid
+        let game_size = screen_width().min(screen_height());
+        let offset_x = (screen_width() - game_size) / 2. + 10.;
+        let offset_y = (screen_height() - game_size) / 2. + 10.;
+        let sq_size = (screen_height() - offset_y * 2.) / SQUARES as f32;
 
-        
+        // A. Draw the grid state
 
-        // draw the dividing lines
-        //  draw the vertical dividing lines
-        //  draw the horizontal dividing lines
+        // outer grid box
+        draw_rectangle(offset_x, offset_y, game_size - 20., game_size - 20., WHITE);
 
-
-        draw_line(40.0, 40.0, 100.0, 200.0, 15.0, BLUE);
-        draw_rectangle(screen_width() / 2.0 - 60.0, 100.0, 120.0, 60.0, GREEN);
-        draw_circle(screen_width() - 30.0, screen_height() - 30.0, 15.0, YELLOW);
-        draw_text("HELLO", 20.0, 20.0, 20.0, DARKGRAY);
-
-
-        if is_mouse_button_down(MouseButton::Left) {
-            let (x, y) = mouse_position();
-            dbg!(&x, &y);
+        // horizontal lines
+        for i in 1..SQUARES {
+            draw_line(
+                offset_x, // left corner at y level
+                offset_y + sq_size * i as f32,
+                screen_width() - offset_x, // end of the horizontal line
+                offset_y + sq_size * i as f32,
+                2.,
+                LIGHTGRAY,
+            );
         }
 
+        // vertical lines lines
+        for i in 1..SQUARES {
+            draw_line(
+                offset_x + sq_size * i as f32,
+                offset_y,
+                offset_x + sq_size * i as f32,
+                screen_height() - offset_y,
+                2.,
+                LIGHTGRAY,
+            );
+        }
+
+        // mark new point as black
+
+        //
         next_frame().await;
     }
 }
