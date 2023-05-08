@@ -1,49 +1,36 @@
-use macroquad::prelude::*;
-
+use macroquad::{miniquad::gl::int_fast32_t, prelude::*};
 mod search;
+
+const SQUARES: usize = 16;
 
 type Point = (i16, i16);
 
-enum PointType {
+#[derive(Clone)]
+enum NodeType {
     Node,
     Wall,
     Source,
-    Destination
+    Destination,
 }
+
 struct graph {
     // array of points and classification
-    SQUARES: usize,
     source: Point,
-    dest: Point,
-    squares: [[pointType; ]; 3],
+    destination: Point,
 }
 
 #[macroquad::main("BasicShapes")]
 async fn main() {
     // create a graph
 
-    // TODO: figure out IO in Rust to read the representation from a file
+    let mut grid: Vec<Vec<NodeType>> = vec![vec![NodeType::Node; SQUARES]; SQUARES];
+    grid[0][0] = NodeType::Source;
+    grid[5][5] = NodeType::Destination;
 
-    // // make the graph representation (adj matrix)
-    // let num_vertices = 6;
+    grid[0][1] = NodeType::Wall;
+    grid[1][1] = NodeType::Wall;
 
-    // // create a 2D array of integers
-    // let mut array_2d: Vec<Vec<i32>> = vec![vec![0; num_vertices]; num_vertices];
-
-    // // fill the array with some values
-    // array_2d[0][1] = 2;
-    // array_2d[0][3] = 4;
-    // array_2d[1][2] = 7;
-    // array_2d[1][3] = 1;
-    // array_2d[2][5] = 1;
-    // array_2d[3][4] = 3;
-    // array_2d[4][2] = 2;
-    // array_2d[4][5] = 5;
-
-    // // search::dijkstra(0, &array_2d);
-    // search::breadth_first(0, 3, &array_2d);
-
-    // macroquad stuff
+    // add some walls
 
     loop {
         clear_background(LIGHTGRAY);
@@ -62,6 +49,25 @@ async fn main() {
 
         // outer grid box
         draw_rectangle(offset_x, offset_y, game_size - 20., game_size - 20., WHITE);
+
+        // draw the actual nodes:
+        for (r, row) in grid.iter().enumerate() {
+            for (c, node) in row.iter().enumerate() {
+                let color: Color = match node {
+                    NodeType::Node => WHITE,
+                    NodeType::Wall => BLACK,
+                    NodeType::Source => GREEN,
+                    NodeType::Destination => RED,
+                };
+                draw_rectangle(
+                    offset_x + r as f32 * sq_size,
+                    offset_y + c as f32 * sq_size,
+                    sq_size,
+                    sq_size,
+                    color,
+                );
+            }
+        }
 
         // horizontal lines
         for i in 1..SQUARES {
