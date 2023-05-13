@@ -1,29 +1,28 @@
+use std::vec;
+
 use macroquad::{miniquad::gl::int_fast32_t, prelude::*};
+use search::depth_first;
 mod search;
 
 const SQUARES: usize = 16;
 
-type Point = (i16, i16);
+type Point = (i32, i32);
 
-#[derive(Clone)]
-enum NodeType {
-    Node,
+#[derive(Debug, Clone)]
+pub enum NodeType {
+    Node(u8), // weight of the node itself
     Wall,
     Source,
     Destination,
-}
-
-struct graph {
-    // array of points and classification
-    source: Point,
-    destination: Point,
 }
 
 #[macroquad::main("BasicShapes")]
 async fn main() {
     // create a graph
 
-    let mut grid: Vec<Vec<NodeType>> = vec![vec![NodeType::Node; SQUARES]; SQUARES];
+    let mut grid: Vec<Vec<NodeType>> = vec![vec![NodeType::Node(1); SQUARES]; SQUARES];
+    let src = (0, 0);
+    let dest = (5, 5);
     grid[0][0] = NodeType::Source;
     grid[5][5] = NodeType::Destination;
 
@@ -31,8 +30,8 @@ async fn main() {
     grid[1][1] = NodeType::Wall;
 
     // add some walls
-
     loop {
+        break; // debug for now
         clear_background(LIGHTGRAY);
 
         // normal gamedev coordinate system:
@@ -53,18 +52,18 @@ async fn main() {
         // draw the actual nodes:
         for (r, row) in grid.iter().enumerate() {
             for (c, node) in row.iter().enumerate() {
-                let color: Color = match node {
-                    NodeType::Node => WHITE,
-                    NodeType::Wall => BLACK,
-                    NodeType::Source => GREEN,
-                    NodeType::Destination => RED,
-                };
+                // let color: Color =
                 draw_rectangle(
                     offset_x + r as f32 * sq_size,
                     offset_y + c as f32 * sq_size,
                     sq_size,
                     sq_size,
-                    color,
+                    match node {
+                        NodeType::Node(_) => WHITE,
+                        NodeType::Wall => BLACK,
+                        NodeType::Source => GREEN,
+                        NodeType::Destination => RED,
+                    },
                 );
             }
         }
@@ -95,7 +94,29 @@ async fn main() {
 
         // mark new point as black
 
+        if (is_key_down(KeyCode::Q)) {
+            dbg!("Yello!");
+            break;
+        }
+
         //
         next_frame().await;
     }
+
+    // structures needed for search
+    let src = (0, 0);
+    let dist = &mut vec![vec![0; SQUARES]; SQUARES]; // distance array
+    let pred = &mut vec![vec![(-1, -1); SQUARES]; SQUARES]; // predecessor array
+
+    depth_first(src, &grid, dist, pred);
+
+    // generate path from pred
+    let mut path: Vec<(i32, i32)> = Vec::new();
+    path.push(dest);
+    while path[0] != src {
+        let (curr_r, curr_c) = path[0];
+        path.insert(0, pred[curr_r as usize][curr_c as usize]);
+    }
+
+    dbg!(path);
 }
