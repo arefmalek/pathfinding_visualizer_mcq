@@ -1,7 +1,7 @@
 use std::vec;
 
-use macroquad::{miniquad::gl::int_fast32_t, prelude::*};
-use search::depth_first;
+use macroquad::prelude::*;
+use search::*;
 mod search;
 
 const SQUARES: usize = 16;
@@ -10,7 +10,7 @@ type Point = (i32, i32);
 
 #[derive(Debug, Clone)]
 pub enum NodeType {
-    Node(u8), // weight of the node itself
+    Node(i32), // weight of the node itself
     Wall,
     Source,
     Destination,
@@ -94,7 +94,7 @@ async fn main() {
 
         // mark new point as black
 
-        if (is_key_down(KeyCode::Q)) {
+        if is_key_down(KeyCode::Q) {
             dbg!("Yello!");
             break;
         }
@@ -105,10 +105,10 @@ async fn main() {
 
     // structures needed for search
     let src = (0, 0);
-    let dist = &mut vec![vec![0; SQUARES]; SQUARES]; // distance array
+    let dist = &mut vec![vec![i32::MAX; SQUARES]; SQUARES]; // distance array
     let pred = &mut vec![vec![(-1, -1); SQUARES]; SQUARES]; // predecessor array
 
-    depth_first(src, &grid, dist, pred);
+    dijkstra(src, &grid, dist, pred);
 
     // generate path from pred
     let mut path: Vec<(i32, i32)> = Vec::new();
@@ -118,5 +118,5 @@ async fn main() {
         path.insert(0, pred[curr_r as usize][curr_c as usize]);
     }
 
-    dbg!(path);
+    println!("{:?}", path);
 }
