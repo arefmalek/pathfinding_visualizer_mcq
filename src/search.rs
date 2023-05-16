@@ -1,4 +1,5 @@
 use priority_queue::DoublePriorityQueue;
+use rand::distributions::weighted::alias_method::Weight;
 use std::collections::HashSet;
 use std::collections::VecDeque;
 
@@ -156,7 +157,7 @@ pub fn dijkstra(
 
     // set distance of every node to infinity
     for (r, row) in dist.iter().enumerate() {
-        for (c, val) in dist[r].iter().enumerate() {
+        for (c, val) in row.iter().enumerate() {
             pq.push((r as i32, c as i32), *val);
         }
     }
@@ -173,41 +174,44 @@ pub fn dijkstra(
     // still unvisited nodes in PQ
     while !pq.is_empty() {
         // get curr node
-        let ((curr), mut curr_dist) = pq.pop_min().expect("idk");
+        let (curr, mut curr_dist) = pq.pop_min().expect("idk");
         let (curr_r, curr_c) = curr;
-        let currNode = &graph[curr_r as usize][curr_c as usize];
+        let curr_node = &graph[curr_r as usize][curr_c as usize];
 
-        if visited.contains(&(curr_r, curr_c)) {
-            continue;
-        }
-
-        match currNode {
-            NodeType::Node(Weight) => curr_dist = curr_dist + Weight,
+        match curr_node {
             NodeType::Wall => continue,
-            NodeType::Source => {}
             // exit condition, destination has been found
             NodeType::Destination => return true,
+            NodeType::Source => {}
+            NodeType::Node(_) => {}
         };
 
         // explore all adjacent nodes, change dist vec if possible
         for i in 0..4 {
-            let nr = (curr_r + dr[i]);
-            let nc = (curr_c + dc[i]);
-            if !visited.contains(&(nr as i32, nc as i32))
+            let nr = curr_r + dr[i];
+            let nc = curr_c + dc[i];
+            if !visited.contains(&(nr, nc)) // unvisited
+                // obeys bounds
                 && 0 <= nr
                 && nr < num_vertices as i32
                 && 0 <= nc
                 && nc < num_vertices as i32
-            // && (graph[nr][nc] == NodeType::Wall)
             {
-                pred[nr as usize][nc as usize] = (curr_r, curr_c);
-                dist[nr as usize][nc as usize] = curr_dist;
-
-                match pq.get(&(curr_r, curr_c)).expect("PQ should exist!") {
-                    None => continue,
+                let mut new_dist = curr_dist;
+                // only match proper lengths
+                match &graph[nr as usize][nc as usize] {
+                    NodeType::Node(weight) => new_dist += weight,
+                    NodeType::Wall => continue,
+                    NodeType::Source => continue,
+                    NodeType::Destination => {}
                 };
 
-                pq.push((curr_r, curr_c), curr_dist); // update priority queue
+                if new_dist < dist[nr as usize][nc as usize] {
+                    dbg!(&curr, &curr_dist, (nr, nc), new_dist);
+                    dist[nr as usize][nc as usize] = new_dist;
+                    pred[nr as usize][nc as usize] = (curr_r, curr_c);
+                    pq.push((nr, nc), new_dist); // update priority queue
+                }
             }
         }
 

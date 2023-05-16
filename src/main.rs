@@ -31,7 +31,6 @@ async fn main() {
 
     // add some walls
     loop {
-        break; // debug for now
         clear_background(LIGHTGRAY);
 
         // normal gamedev coordinate system:
@@ -108,6 +107,7 @@ async fn main() {
     let dist = &mut vec![vec![i32::MAX; SQUARES]; SQUARES]; // distance array
     let pred = &mut vec![vec![(-1, -1); SQUARES]; SQUARES]; // predecessor array
 
+    let (dest_r, dest_c) = dest;
     dijkstra(src, &grid, dist, pred);
 
     // generate path from pred
@@ -118,5 +118,5 @@ async fn main() {
         path.insert(0, pred[curr_r as usize][curr_c as usize]);
     }
 
-    println!("{:?}", path);
+    println!("{:?} {}", path, dist[dest_r as usize][dest_c as usize]);
 }
