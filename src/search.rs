@@ -166,10 +166,10 @@ pub fn dijkstra(
     pq.change_priority(&(src_r, src_c), 0);
     dist[src_r as usize][src_c as usize] = 0;
 
-    dbg!(
-        &pq.get(&(src_r, src_c)),
-        dist[src_r as usize][src_c as usize]
-    );
+    // dbg!(
+    //     &pq.get(&(src_r, src_c)),
+    //     dist[src_r as usize][src_c as usize]
+    // );
 
     // still unvisited nodes in PQ
     while !pq.is_empty() {
@@ -207,7 +207,7 @@ pub fn dijkstra(
                 };
 
                 if new_dist < dist[nr as usize][nc as usize] {
-                    dbg!(&curr, &curr_dist, (nr, nc), new_dist);
+                    // dbg!(&curr, &curr_dist, (nr, nc), new_dist);
                     dist[nr as usize][nc as usize] = new_dist;
                     pred[nr as usize][nc as usize] = (curr_r, curr_c);
                     pq.push((nr, nc), new_dist); // update priority queue
